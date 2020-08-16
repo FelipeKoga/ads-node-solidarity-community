@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
-import authConfig from '@config/auth';
+import { authConfig } from '@config/auth';
 
 class AuthController {
   public async authenticate(req: Request, res: Response): Promise<Response> {

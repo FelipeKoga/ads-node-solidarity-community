@@ -1,5 +1,3 @@
-const authConfig = {
+export const authConfig = {
   secretKey: 'HUIDHAIUSHUDHAISHDSA',
 };
-
-export default authConfig;
