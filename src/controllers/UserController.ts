@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 const users = [
   { email: 'felipe.koga@hotmail.com', name: 'Felipe' } as User,
   { email: 'vinicius@hotmail.com', name: 'Vinicius' } as User,
+  { email: 'eduardo@hotmail.com', name: 'Eduardo' } as User,
 ];
 
 class UserController {
