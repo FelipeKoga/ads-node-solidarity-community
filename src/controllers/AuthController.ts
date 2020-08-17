@@ -43,15 +43,14 @@ class AuthController {
           body: 'Missing fields',
         });
       }
-      const emailAlreadyRegister = await UserSchema.findOne({
-        email,
-      });
+      const emailAlreadyRegister = await UserSchema.findOne({ email });
 
       if (emailAlreadyRegister) {
         return res.status(400).json({ body: 'Email already register' });
       }
 
       const user = new UserSchema({
+        name,
         email,
         password: md5(password),
       });
