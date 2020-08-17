@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import UserSchema from 'src/schemas/UserSchema';
+import UserSchema from '@schemas/UserSchema';
 
 class UserController {
   public async list(req: Request, res: Response): Promise<Response> {

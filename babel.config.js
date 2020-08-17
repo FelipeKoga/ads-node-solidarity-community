@@ -19,6 +19,7 @@ module.exports = {
           '@models': './src/models',
           '@controllers': './src/controllers',
           '@middlewares': './src/middlewares',
+          '@schemas': './src/schemas',
         },
       },
     ],

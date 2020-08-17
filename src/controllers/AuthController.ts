@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { authConfig } from '@config/auth';
-import UserSchema from '@models/UserSchema';
+import UserSchema from '@schemas/UserSchema';
 import md5 from 'md5';
 
 function createToken(user) {
