@@ -1,19 +1,13 @@
-import { User } from '@models/User';
 import { Request, Response } from 'express';
-
-const users = [
-  { email: 'felipe.koga@hotmail.com', name: 'Felipe' } as User,
-  { email: 'vinicius@hotmail.com', name: 'Vinicius' } as User,
-  { email: 'eduardo@hotmail.com', name: 'Eduardo' } as User,
-];
+import UserSchema from 'src/schemas/UserSchema';
 
 class UserController {
   public async list(req: Request, res: Response): Promise<Response> {
+    const users = await UserSchema.find(
+      {},
+      { name: true, email: true, _id: false }
+    );
     return res.json(users);
-  }
-
-  public async create(req: Request, res: Response): Promise<Response> {
-    return res.json('Created');
   }
 }
 

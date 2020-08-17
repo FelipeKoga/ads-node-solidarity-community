@@ -1,16 +1,20 @@
 import { Response, Request, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { authConfig } from '@config/auth';
 
 export default (
   req: Request,
   res: Response,
   next: NextFunction
 ): Response | void => {
-  return next();
-  // const authHeader = req.headers.authorization;
+  console.log('MIDDLEWARES');
+  const authHeader = req.headers.authorization;
 
-  // if (!authHeader) {
-  //   return res.status(401).send({ error: "Missing token." });
-  // }
+  if (!authHeader) {
+    return res.status(401).send({ body: 'Missing token.' });
+  }
+
+  console.log(authHeader);
 
   // const parts = authHeader.split(" ");
 
@@ -24,13 +28,11 @@ export default (
   //   return res.status(401).send({ error: "Token malformed." });
   // }
 
-  // jwt.verify(token, authConfig.secretKey, (err, decoded: any) => {
-  //   if (err) {
-  //     return res.status(401).send({ error: "Token invalid." });
-  //   }
-
-  //   req.userId = decoded.id;
-
-  //   return next();
-  // });
+  jwt.verify(authHeader, authConfig.secretKey, (err, decoded: any) => {
+    if (err) {
+      return res.status(401).send({ error: 'Token invalid.' });
+    }
+    console.log(decoded);
+    return next();
+  });
 };

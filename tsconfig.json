@@ -17,7 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "@controllers/*": ["./src/controllers/*"],
-      "@models/*": ["./src/models/*"],
+      "@models/*": ["src/schemas/*"],
       "@config/*": ["./src/config/*"],
       "@middlewares/*": ["./src/middlewares/*"]
     }
