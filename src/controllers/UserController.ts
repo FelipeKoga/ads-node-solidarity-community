@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import UserSchema from '@schemas/UserSchema';
 import { User } from '@entities/User';
+import md5 from 'md5';
 
 class UserController {
   public async list(req: Request, res: Response): Promise<Response> {
@@ -12,20 +13,25 @@ class UserController {
   }
 
   public async getById(req: Request, res: Response): Promise<Response> {
-    const _id = req._id;
-    console.log(_id);
-
-    const user = await UserSchema.find({ _id });
-    console.log(user);
-
-    return res.status(200).json();
+    const user = await UserSchema.findOne({ _id: req._id });
+    return res.status(200).json(user);
   }
 
   public async update(req: Request, res: Response): Promise<Response> {
     console.log(req);
-    const user: User = req.body;
-    console.log(user);
-    return res.status(201).json();
+    try {
+      const userRequest: User = req.body;
+
+      const user = new UserSchema({
+        ...userRequest,
+        password: md5(userRequest.password),
+      });
+      const response = await user.updateOne({ _id: userRequest._id });
+      console.log(response);
+      return res.status(201).json(response);
+    } catch {
+      return res.status(400).json();
+    }
   }
 }
 
