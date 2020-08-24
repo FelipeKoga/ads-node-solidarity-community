@@ -6,7 +6,7 @@ import AuthController from '@controllers/AuthController';
 
 const routes = Router();
 routes.post('/login', AuthController.authenticate);
-routes.post('/register', AuthController.register);
+routes.post('/user', AuthController.register);
 
 routes.use(auth);
 // routes.get('/me', UserController.getById);
