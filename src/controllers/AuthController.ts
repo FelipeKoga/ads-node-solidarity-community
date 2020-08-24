@@ -27,7 +27,7 @@ class AuthController {
         data: {
           id: user._id,
           email,
-          role: user.toObject(),
+          role: user.toObject().role,
         },
       });
       return res.status(200).json(token);
