@@ -14,10 +14,12 @@ class AuthController {
   public async authenticate(req: Request, res: Response): Promise<Response> {
     try {
       const { email, password } = req.body;
+      console.log(email, password);
       const user = await UserSchema.findOne({
         email: email,
         password: md5(password),
       });
+      console.log(user);
       if (!user) {
         return res.status(401).json();
       }
@@ -27,6 +29,7 @@ class AuthController {
       });
       return res.status(200).json(token);
     } catch (err) {
+      console.log(err);
       return res.status(400).json();
     }
   }
