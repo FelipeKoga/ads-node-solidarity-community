@@ -1,11 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
-import { authConfig } from '@config/auth';
 import UserSchema from '@schemas/UserSchema';
 import md5 from 'md5';
 
 function createToken(user) {
-  return jwt.sign(user, authConfig.secretKey, {
+  return jwt.sign(user, process.env.SECRET_KEY, {
     expiresIn: 3600,
   });
 }
@@ -19,15 +18,13 @@ class AuthController {
         password: md5(password),
       });
       if (!user) {
-        return res.status(404).json({
-          body: 'Unauthorized',
-        });
+        return res.status(401).json();
       }
       const token = createToken({
         email,
         id: user._id,
       });
-      return res.json(token);
+      return res.status(200).json(token);
     } catch (err) {
       return res.status(400).json({
         body: err.message,
@@ -37,18 +34,18 @@ class AuthController {
 
   public async register(req: Request, res: Response): Promise<Response> {
     try {
-      const { name, email, password } = req.body;
-      if (!name || !email || !password) {
-        return res.status(400).json({
-          body: 'Missing fields',
-        });
-      }
+      const userRequest = req.body;
+      console.log(Object.values(userRequest));
+      // if (!name || !email || !password) {
+      //   return res.status(400).json({
+      //     body: 'Missing fields',
+      //   });
+      // }
       const emailAlreadyRegister = await UserSchema.findOne({ email });
 
       if (emailAlreadyRegister) {
-        return res.status(400).json({ body: 'Email already register' });
+        return res.status(409).json({ body: 'Email already register' });
       }
-
       const user = new UserSchema({
         name,
         email,

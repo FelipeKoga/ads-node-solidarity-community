@@ -33,6 +33,8 @@ export default (
       return res.status(401).send({ error: 'Token invalid.' });
     }
     console.log(decoded);
+
+    req._id = decoded._id;
     return next();
   });
 };

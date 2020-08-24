@@ -9,6 +9,7 @@ routes.post('/login', AuthController.authenticate);
 routes.post('/register', AuthController.register);
 
 routes.use(auth);
-routes.get('/users', UserController.list);
+// routes.get('/me', UserController.getById);
+routes.get('/user', UserController.update);
 
 export default routes;

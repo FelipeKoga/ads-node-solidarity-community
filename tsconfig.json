@@ -18,7 +18,8 @@
     "paths": {
       "@controllers/*": ["./src/controllers/*"],
       "@schemas/*": ["src/schemas/*"],
-      "@config/*": ["./src/config/*"],
+      "@entities/*": ["src/entities/*"],
+
       "@middlewares/*": ["./src/middlewares/*"]
     }
   },
