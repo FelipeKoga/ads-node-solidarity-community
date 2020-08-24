@@ -1,6 +1,5 @@
 import { Response, Request, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { authConfig } from '@config/auth';
 
 export default (
   req: Request,
@@ -28,7 +27,7 @@ export default (
   //   return res.status(401).send({ error: "Token malformed." });
   // }
 
-  jwt.verify(authHeader, authConfig.secretKey, (err, decoded: any) => {
+  jwt.verify(authHeader, process.env.SECRET_KEY, (err, decoded: any) => {
     if (err) {
       return res.status(401).send({ error: 'Token invalid.' });
     }
