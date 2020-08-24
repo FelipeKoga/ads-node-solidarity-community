@@ -27,6 +27,7 @@ class AuthController {
         data: {
           _id: user._id,
           email,
+          name: user.toObject().name,
           role: user.toObject().role,
         },
       });
