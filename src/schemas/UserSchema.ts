@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  longitutde: {
+  longitude: {
     type: Number,
     required: true,
   },
@@ -42,12 +42,17 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   complement: {
-    type: Number,
+    type: String,
     required: false,
   },
   phone: {
-    type: Number,
+    type: String,
     required: true,
+  },
+  role: {
+    type: String,
+    required: true,
+    default: 'user',
   },
 });
 

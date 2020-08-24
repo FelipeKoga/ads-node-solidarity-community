@@ -13,4 +13,5 @@ export class User {
   number: number;
   complement: string;
   phone: string;
+  role: string;
 }
