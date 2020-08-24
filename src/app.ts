@@ -13,14 +13,10 @@ class App {
     this.express.use(express.json());
     this.express.use(cors());
     this.express.use(routes);
-    console.log(process.env.MONGO_DB_URL);
-    mongoose.connect(
-      process.env.MONGO_DB_URL,
-      { useNewUrlParser: true, useUnifiedTopology: true },
-      () => {
-        console.log('Connected to');
-      }
-    );
+    mongoose.connect(process.env.MONGO_DB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
   }
 }
 export default new App().express;
