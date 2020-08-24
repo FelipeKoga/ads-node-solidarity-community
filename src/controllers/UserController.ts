@@ -13,6 +13,7 @@ class UserController {
 
   public async getById(req: Request, res: Response): Promise<Response> {
     const _id = req._id;
+    console.log(_id);
 
     const user = await UserSchema.find({ _id });
     console.log(user);

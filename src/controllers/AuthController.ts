@@ -25,12 +25,12 @@ class AuthController {
       }
       const token = createToken({
         data: {
-          id: user._id,
+          _id: user._id,
           email,
           role: user.toObject().role,
         },
       });
-      return res.status(200).json(token);
+      return res.status(200).json({ token });
     } catch (err) {
       console.log(err);
       return res.status(400).json();
