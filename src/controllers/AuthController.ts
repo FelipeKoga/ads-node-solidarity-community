@@ -24,8 +24,11 @@ class AuthController {
         return res.status(401).json();
       }
       const token = createToken({
-        email,
-        id: user._id,
+        data: {
+          id: user._id,
+          email,
+          role: user.toObject(),
+        },
       });
       return res.status(200).json(token);
     } catch (err) {
