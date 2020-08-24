@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import UserSchema from '@schemas/UserSchema';
 import md5 from 'md5';
+import { User } from '@entities/User';
 
 function createToken(user) {
   return jwt.sign(user, process.env.SECRET_KEY, {
@@ -26,42 +27,33 @@ class AuthController {
       });
       return res.status(200).json(token);
     } catch (err) {
-      return res.status(400).json({
-        body: err.message,
-      });
+      return res.status(400).json();
     }
   }
 
   public async register(req: Request, res: Response): Promise<Response> {
     try {
-      const userRequest = req.body;
-      console.log(Object.values(userRequest));
-      // if (!name || !email || !password) {
-      //   return res.status(400).json({
-      //     body: 'Missing fields',
-      //   });
-      // }
-      const emailAlreadyRegister = await UserSchema.findOne({ email });
+      const userRequest: User = req.body;
+
+      console.log(userRequest);
+
+      const emailAlreadyRegister = await UserSchema.findOne({
+        email: userRequest.email,
+      });
 
       if (emailAlreadyRegister) {
-        return res.status(409).json({ body: 'Email already register' });
+        return res.status(409).json();
       }
+
       const user = new UserSchema({
-        name,
-        email,
-        password: md5(password),
+        ...userRequest,
+        password: md5(userRequest.password),
       });
+
       await user.save();
-      const token = createToken({
-        name,
-        email,
-        id: user._id,
-      });
-      return res.json(token);
+      return res.status(201).json();
     } catch (err) {
-      return res.status(400).json({
-        body: err.message,
-      });
+      return res.status(400).json();
     }
   }
 }
