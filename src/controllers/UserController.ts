@@ -24,8 +24,6 @@ class UserController {
   public async update(req: Request, res: Response): Promise<Response> {
     try {
       const userRequest: User = req.body;
-
-      console.log(userRequest);
       const user = new UserSchema(
         userRequest.password
           ? {
@@ -34,9 +32,9 @@ class UserController {
             }
           : userRequest
       );
-      const response = await user.updateOne({ _id: userRequest._id });
-      console.log(response);
-      return res.status(201).json(response);
+      await user.updateOne({ _id: userRequest._id });
+      await user.save();
+      return res.status(200).json();
     } catch {
       return res.status(400).json();
     }
