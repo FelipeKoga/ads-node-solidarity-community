@@ -24,18 +24,15 @@ class UserController {
   public async update(req: Request, res: Response): Promise<Response> {
     try {
       const userRequest: User = req.body;
-      const user = new UserSchema(
-        userRequest.password
-          ? {
-              ...userRequest,
-              password: md5(userRequest.password),
-            }
-          : userRequest
-      );
-      await user.updateOne({ _id: userRequest._id });
-      await user.save();
+      if (!userRequest.password) {
+        delete userRequest.password;
+      } else {
+        userRequest.password = md5(userRequest.password);
+      }
+      await UserSchema.updateOne({ _id: req._id }, userRequest);
       return res.status(200).json();
-    } catch {
+    } catch (err) {
+      console.log(err);
       return res.status(400).json();
     }
   }
