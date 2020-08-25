@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { Request, Response } from 'express';
 import UserSchema from '@schemas/UserSchema';
 import { User } from '@entities/User';
@@ -21,14 +22,18 @@ class UserController {
   }
 
   public async update(req: Request, res: Response): Promise<Response> {
-    console.log(req);
     try {
       const userRequest: User = req.body;
 
-      const user = new UserSchema({
-        ...userRequest,
-        password: md5(userRequest.password),
-      });
+      console.log(userRequest);
+      const user = new UserSchema(
+        userRequest.password
+          ? {
+              ...userRequest,
+              password: md5(userRequest.password),
+            }
+          : userRequest
+      );
       const response = await user.updateOne({ _id: userRequest._id });
       console.log(response);
       return res.status(201).json(response);
