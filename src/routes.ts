@@ -10,6 +10,6 @@ routes.post('/user', AuthController.register);
 
 routes.use(auth);
 routes.get('/me', UserController.getById);
-routes.get('/user', UserController.update);
+routes.put('/user', UserController.update);
 
 export default routes;

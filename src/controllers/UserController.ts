@@ -13,7 +13,10 @@ class UserController {
   }
 
   public async getById(req: Request, res: Response): Promise<Response> {
-    const user = await UserSchema.findOne({ _id: req._id });
+    const user = await UserSchema.findOne(
+      { _id: req._id },
+      { password: false }
+    );
     return res.status(200).json(user);
   }
 
