@@ -54,7 +54,9 @@ class AuthController {
       await user.save();
       return res.status(201).json();
     } catch (err) {
-      return res.status(400).json();
+      return res
+        .status(400)
+        .json({ error: 'Campos obrigatórios não preenchidos' });
     }
   }
 
