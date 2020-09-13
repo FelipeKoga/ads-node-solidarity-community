@@ -1,8 +1,9 @@
 import { Response, Request, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { NewRequest } from 'src/utils/NewRequest';
 
 export default (
-  req: Request,
+  req: NewRequest,
   res: Response,
   next: NextFunction
 ): Response | void => {

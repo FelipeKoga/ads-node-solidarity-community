@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import UserSchema from '@schemas/UserSchema';
 import { User } from '@entities/User';
 import md5 from 'md5';
+import { NewRequest } from 'src/utils/NewRequest';
 
 class UserController {
   public async list(req: Request, res: Response): Promise<Response> {
@@ -13,7 +14,7 @@ class UserController {
     return res.json(users);
   }
 
-  public async getById(req: Request, res: Response): Promise<Response> {
+  public async getById(req: NewRequest, res: Response): Promise<Response> {
     const user = await UserSchema.findOne(
       { _id: req._id },
       { password: false }
@@ -21,9 +22,10 @@ class UserController {
     return res.status(200).json(user);
   }
 
-  public async update(req: Request, res: Response): Promise<Response> {
+  public async update(req: NewRequest, res: Response): Promise<Response> {
     try {
       const userRequest: User = req.body;
+      delete userRequest.email;
       if (!userRequest.password) {
         delete userRequest.password;
       } else {
