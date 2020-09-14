@@ -3,44 +3,30 @@ import OcurrenceSchema from '@schemas/OcurrenceSchema';
 import UserSchema from '@schemas/UserSchema';
 import { Response } from 'express';
 import { NewRequest } from 'src/utils/NewRequest';
+import { object, string, number, boolean } from 'yup';
 
-function checkFields(body: Ocurrence) {
+async function checkFields(body: Ocurrence) {
+  const schema = object().shape({
+    anonymous: boolean().required(),
+    description: string().required(),
+    ocurred_at: number().required(),
+    zip_code: string().required(),
+    latitude: number().required(),
+    longitude: number().required(),
+    neighborhood: string().required(),
+    type: string().required(),
+    street: string().required(),
+    city: string().required(),
+    complement: string(),
+    number: number(),
+  });
+
   const missingFields = [];
-  if (body.anonymous === null || body.anonymous === undefined) {
-    missingFields.push('anonymous');
-  }
-
-  if (!body.description) {
-    missingFields.push('description');
-  }
-
-  if (!body.ocurred_at) {
-    missingFields.push('ocurred_at');
-  }
-
-  if (!body.zip_code) {
-    missingFields.push('zip_code');
-  }
-
-  if (!body.latitude) {
-    missingFields.push('latitude');
-  }
-
-  if (!body.neighborhood) {
-    missingFields.push('neighborhood');
-  }
-
-  if (!body.type) {
-    missingFields.push('type');
-  }
-
-  if (!body.street) {
-    missingFields.push('street');
-  }
-
-  if (!body.city) {
-    missingFields.push('city');
-  }
+  await schema.validate(body, { abortEarly: false }).catch((e) => {
+    e.inner.forEach((err) => {
+      missingFields.push(err.path);
+    });
+  });
 
   return missingFields.toString();
 }
@@ -48,7 +34,7 @@ function checkFields(body: Ocurrence) {
 class OcurrenceController {
   public async newOcurrence(req: NewRequest, res: Response): Promise<Response> {
     try {
-      const missingFields = checkFields(req.body);
+      const missingFields = await checkFields(req.body);
       if (missingFields) {
         return res.status(400).json({
           error: `Campos obrigatórios não preenchidos: ${missingFields}`,
