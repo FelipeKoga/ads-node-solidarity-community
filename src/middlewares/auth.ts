@@ -13,7 +13,6 @@ export default (
   }
 
   jwt.verify(authHeader, process.env.SECRET_KEY, (err, decoded: any) => {
-    console.log(err);
     if (err) {
       return res.status(401).send({ error: 'Token invalid.' });
     }

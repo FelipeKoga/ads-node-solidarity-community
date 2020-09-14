@@ -30,7 +30,6 @@ class AuthController {
       });
       return res.status(200).json({ token });
     } catch (err) {
-      console.log(err);
       return res.status(400).json();
     }
   }
@@ -85,7 +84,6 @@ class AuthController {
       await transporter.sendMail(mailOptions);
       return res.status(200).json();
     } catch (err) {
-      console.log(err);
       return res.status(400).json();
     }
   }

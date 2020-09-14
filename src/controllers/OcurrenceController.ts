@@ -38,10 +38,6 @@ function checkFields(body: Ocurrence) {
     missingFields.push('street');
   }
 
-  if (!body.user_id) {
-    missingFields.push('user_id');
-  }
-
   if (!body.city) {
     missingFields.push('city');
   }
@@ -59,7 +55,7 @@ class OcurrenceController {
         });
       }
 
-      const ocurrence = new OcurrenceSchema(req.body);
+      const ocurrence = new OcurrenceSchema({ ...req.body, user_id: req._id });
 
       await ocurrence.save();
       return res.status(201).json();
@@ -80,7 +76,7 @@ class OcurrenceController {
       if (obj.anonymous === false) {
         ocurrencesWithUser.push({
           ...obj,
-          name: (await UserSchema.findOne({ _id: obj.user_id })).toObject()
+          user_name: (await UserSchema.findOne({ _id: obj.user_id })).toObject()
             .name,
         });
       } else {
