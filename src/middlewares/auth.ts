@@ -17,6 +17,7 @@ export default (
       return res.status(401).send({ error: 'Token invalid.' });
     }
     req._id = decoded._id;
+    req.role = decoded.role;
     return next();
   });
 };

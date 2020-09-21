@@ -94,7 +94,6 @@ class OcurrenceController {
         { user_id: userId },
         { __v: false }
       );
-      // const mappedOcurrences = await this.mapOcurrences(ocurrences);
       return res.status(200).json(ocurrences);
     } catch {
       return res.status(400).json();
@@ -114,6 +113,7 @@ class OcurrenceController {
       }
 
       const args: Ocurrence = req.body;
+
       const missingFields = await this.checkFields(args);
       if (missingFields) {
         return res.status(400).json({
@@ -121,12 +121,15 @@ class OcurrenceController {
         });
       }
 
-      const updateRes = await OcurrenceSchema.findOneAndUpdate(
+      const ocurrence = await OcurrenceSchema.findById(ocurrenceId);
+
+      if (req.role !== 'admin' && ocurrence.toObject().user_id !== req._id) {
+        return res.status(401).json({ error: 'Não autorizado' });
+      }
+
+      const updateRes = await OcurrenceSchema.update(
         { _id: ocurrenceId },
-        args,
-        {
-          useFindAndModify: false,
-        }
+        args
       );
 
       if (!updateRes) {
@@ -149,11 +152,17 @@ class OcurrenceController {
         return res.status(400).json({ error: 'Missing occurrence id' });
       }
 
-      const deleteRes = await OcurrenceSchema.findByIdAndDelete(ocurrenceId);
+      const ocurrence = await OcurrenceSchema.findById(ocurrenceId);
 
-      if (!deleteRes) {
+      if (!ocurrence) {
         return res.status(400).json({ error: 'A ocorrência não existe' });
       }
+
+      if (req.role !== 'admin' && ocurrence.toObject().user_id !== req._id) {
+        return res.status(401).json({ error: 'Não autorizado' });
+      }
+
+      await OcurrenceSchema.remove({ _id: ocurrenceId });
 
       return res.status(200).json();
     } catch {
