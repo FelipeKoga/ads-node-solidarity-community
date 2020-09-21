@@ -33,22 +33,31 @@ class OcurrenceController {
     return missingFields.toString();
   };
 
+  private handleAnonymousOcurrence = async (
+    ocurrence: Ocurrence
+  ): Promise<Ocurrence> => {
+    if (ocurrence.anonymous === false) {
+      return {
+        ...ocurrence,
+        user_name: (
+          await UserSchema.findOne({ _id: ocurrence.user_id })
+        ).toObject().name,
+      };
+    } else {
+      delete ocurrence.user_id;
+    }
+
+    return ocurrence;
+  };
+
   private mapOcurrences = async (
     ocurrences: Document[]
   ): Promise<Ocurrence[]> => {
     const ocurrencesWithUser: Ocurrence[] = [];
     const promises = ocurrences.map(async (ocurrence) => {
-      const obj: Ocurrence = ocurrence.toObject();
-      if (obj.anonymous === false) {
-        ocurrencesWithUser.push({
-          ...obj,
-          user_name: (await UserSchema.findOne({ _id: obj.user_id })).toObject()
-            .name,
-        });
-      } else {
-        delete obj.user_id;
-        ocurrencesWithUser.push(obj);
-      }
+      ocurrencesWithUser.push(
+        await this.handleAnonymousOcurrence(ocurrence.toObject())
+      );
     });
     await Promise.all(promises);
     return ocurrencesWithUser;
@@ -75,13 +84,44 @@ class OcurrenceController {
     }
   };
 
-  public getOcurrences = async (
+  public getAllOcurrences = async (
     _: NewRequest,
     res: Response
   ): Promise<Response> => {
     const ocurrences = await OcurrenceSchema.find({}, { __v: false });
     const ocurrencesWithUser = await this.mapOcurrences(ocurrences);
-    return res.json(ocurrencesWithUser);
+    return res.status(200).json(ocurrencesWithUser);
+  };
+
+  public getOcurrence = async (
+    req: NewRequest,
+    res: Response
+  ): Promise<Response> => {
+    try {
+      const ocurrenceId = req.params.id;
+      if (!ocurrenceId) {
+        return res
+          .status(400)
+          .json({ error: 'ID da ocorrência não encontrado' });
+      }
+
+      const ocurrence = await OcurrenceSchema.findById(ocurrenceId, {
+        __v: false,
+      });
+
+      if (!ocurrence) {
+        return res.status(400).json({ error: 'Ocorrência não encontrada' });
+      }
+
+      return res
+        .status(200)
+        .json(await this.handleAnonymousOcurrence(ocurrence.toObject()));
+    } catch (e) {
+      if (e.kind === 'ObjectId') {
+        return res.status(400).json({ error: 'ID inválido' });
+      }
+      return res.status(400).json({ error: 'Ocorreu um erro' });
+    }
   };
 
   public getUserOcurrences = async (
@@ -133,11 +173,14 @@ class OcurrenceController {
       );
 
       if (!updateRes) {
-        return res.status(400).json({ error: 'A ocorrência não existe' });
+        return res.status(400).json({ error: 'Ocorrência não encontrada' });
       }
 
       return res.status(200).json();
-    } catch {
+    } catch (e) {
+      if (e.kind === 'ObjectId') {
+        return res.status(400).json({ error: 'ID inválido' });
+      }
       return res.status(400).json();
     }
   };
@@ -165,7 +208,10 @@ class OcurrenceController {
       await OcurrenceSchema.remove({ _id: ocurrenceId });
 
       return res.status(200).json();
-    } catch {
+    } catch (e) {
+      if (e.kind === 'ObjectId') {
+        return res.status(400).json({ error: 'ID inválido' });
+      }
       return res.status(400).json();
     }
   };
