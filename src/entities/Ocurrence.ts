@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-export class Ocurrence {
+export interface Ocurrence {
   _id: string;
   description: string;
   zip_code: string;
@@ -14,4 +14,5 @@ export class Ocurrence {
   user_id: string;
   type: string;
   ocurred_at: number;
+  user_name?: string;
 }

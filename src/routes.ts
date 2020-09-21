@@ -15,5 +15,9 @@ routes.get('/me', UserController.getById);
 routes.put('/user', UserController.update);
 routes.get('/ocurrences', OcurrenceController.getOcurrences);
 routes.post('/ocurrences', OcurrenceController.newOcurrence);
+routes.put('/ocurrences/:id', OcurrenceController.updateOcurrence);
+routes.delete('/ocurrences/:id', OcurrenceController.deleteOcurrence);
+
+routes.get('/ocurrences/me', OcurrenceController.getUserOcurrences);
 
 export default routes;

@@ -28,10 +28,12 @@ const OcurrenceSchema = new mongoose.Schema({
   number: {
     type: Number,
     required: false,
+    default: null,
   },
   complement: {
     type: String,
     required: false,
+    default: null,
   },
   ocurred_at: {
     type: Number,
