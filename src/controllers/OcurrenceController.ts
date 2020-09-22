@@ -19,8 +19,6 @@ class OcurrenceController {
       type: string().required(),
       street: string().required(),
       city: string().required(),
-      complement: string(),
-      number: number(),
     });
 
     const missingFields = [];
@@ -98,6 +96,7 @@ class OcurrenceController {
     res: Response
   ): Promise<Response> => {
     try {
+      console.log('Entrei 2');
       const ocurrenceId = req.params.id;
       if (!ocurrenceId) {
         return res
@@ -128,13 +127,15 @@ class OcurrenceController {
     req: NewRequest,
     res: Response
   ): Promise<Response> => {
+    console.log('Entrei');
     try {
       const userId = req._id;
       const ocurrences = await OcurrenceSchema.find(
         { user_id: userId },
         { __v: false }
       );
-      return res.status(200).json(ocurrences);
+      const ocurrencesWithUser = await this.mapOcurrences(ocurrences);
+      return res.status(200).json(ocurrencesWithUser);
     } catch {
       return res.status(400).json();
     }
