@@ -96,7 +96,6 @@ class OcurrenceController {
     res: Response
   ): Promise<Response> => {
     try {
-      console.log('Entrei 2');
       const ocurrenceId = req.params.id;
       if (!ocurrenceId) {
         return res
@@ -164,18 +163,15 @@ class OcurrenceController {
 
       const ocurrence = await OcurrenceSchema.findById(ocurrenceId);
 
+      if (!ocurrence) {
+        return res.status(400).json({ error: 'A ocorrência não existe' });
+      }
+
       if (req.role !== 'admin' && ocurrence.toObject().user_id !== req._id) {
         return res.status(401).json({ error: 'Não autorizado' });
       }
 
-      const updateRes = await OcurrenceSchema.update(
-        { _id: ocurrenceId },
-        args
-      );
-
-      if (!updateRes) {
-        return res.status(400).json({ error: 'Ocorrência não encontrada' });
-      }
+      await OcurrenceSchema.update({ _id: ocurrenceId }, args);
 
       return res.status(200).json();
     } catch (e) {
