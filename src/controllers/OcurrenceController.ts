@@ -126,7 +126,6 @@ class OcurrenceController {
     req: NewRequest,
     res: Response
   ): Promise<Response> => {
-    console.log('Entrei');
     try {
       const userId = req._id;
       const ocurrences = await OcurrenceSchema.find(
@@ -153,6 +152,10 @@ class OcurrenceController {
       }
 
       const args: Ocurrence = req.body;
+
+      if (ocurrenceId !== args._id) {
+        return res.status(400).json({ error: 'IDs estão diferentes' });
+      }
 
       const missingFields = await this.checkFields(args);
       if (missingFields) {
